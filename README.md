@@ -32,11 +32,11 @@ https://kubernetes.io/docs/tasks/tools/install-kubectl-windows/
 
 # devops_eks_jenkins_loki_operator
 
-
+```shell
 $ eksctl create cluster --name mycluster1 --region=us-east-1
 $ eksctl get  cluster --name mycluster1 --region=us-east-1
 $ kubectl get nodes
-
+```
 kubectl create -f \
 https://raw.githubusercontent.com/operator-framework/operator-lifecycle-manager/master/deploy/upstream/quickstart/crds.yaml
 kubectl create -f \
