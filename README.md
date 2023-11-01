@@ -34,27 +34,39 @@ https://kubernetes.io/docs/tasks/tools/install-kubectl-windows/
 
 ```shell
 $ eksctl create cluster --name mycluster1 --region=us-east-1
+```
+```shell
 $ eksctl get  cluster --name mycluster1 --region=us-east-1
+```
+```shell
 $ kubectl get nodes
 ```
+```shell
 kubectl create -f \
 https://raw.githubusercontent.com/operator-framework/operator-lifecycle-manager/master/deploy/upstream/quickstart/crds.yaml
+```
+```shell
 kubectl create -f \
 https://raw.githubusercontent.com/operator-framework/operator-lifecycle-manager/master/deploy/upstream/quickstart/olm.yaml
-
+```
+```shell
 kubectl get catalogsources -n olm
+```
+```shell
 kubectl get packagemanifests -l catalog=operatorhubio-catalog
 
 https://github.com/helm/helm/releases
-
+```
+```shell
 $ kubectl create namespace lwns
 $ ./helm.exe  repo add jenkins https://raw.githubusercontent.com/jenkinsci/kubernetes-operator/master/chart
 $ ./helm.exe install my-jenkins-operator jenkins/jenkins-operator -n lwns --set jenkins.enabled=false
-
-$ kubectl --namespace lwns get pods -w
-
-# YAML CODE FOR JENKINS SETUP USING KUBERNETES OPERATOR
 ```
+```shell
+$ kubectl --namespace lwns get pods -w
+```
+# YAML CODE FOR JENKINS SETUP USING KUBERNETES OPERATOR
+```YAML
 $ vim jenkins_instance.yaml
 apiVersion: jenkins.io/v1alpha2
 kind: Jenkins
@@ -112,35 +124,46 @@ spec:
       repositoryBranch: master
       repositoryUrl: https://github.com/jenkinsci/kubernetes-operator.git
 ```
-
+```shell
 $ kubectl create -f jenkins_instance.yaml
 $ kubectl --namespace lwns get pods -w
-
+```
+```shell
 $ kubectl --namespace lwns get secret jenkins-operator-credentials-example -o 'jsonpath={.data.user}' | base64 -d
+
+```
+```shell
 $ kubectl --namespace lwns get secret jenkins-operator-credentials-example -o 'jsonpath={.data.password}' | base64 -d
-
+```
+```shell
 $ kubectl --namespace lwns port-forward jenkins-example 8080:8080
-
-
+```
+```shell
 $ ./helm.exe  repo add grafana https://grafana.github.io/helm-charts
 $ ./helm.exe  repo update
+```
 
+```shell
 $ ./helm.exe upgrade --install loki grafana/loki-stack  --set grafana.enabled=true,prometheus.enabled=true,prometheus.alertmanager.persistentVolume.enabled=false,prometheus.server.persistentVolume.enabled=false
-
+```
+```shell
 $ kubectl patch svc loki-grafana -p '{"spec": {"type": "LoadBalancer"}}'
 $ kubectl get svc loki-grafana -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'
+```
 
+```shell
 $ kubectl get secret loki-grafana -o go-template='{{range $k,$v := .data}}{{printf "%s: " $k}}{{if not $v}}{{$v}}{{else}}{{$v | base64decode}}{{end}}{{"\n"}}{{end}}'
-
+```
 
 Loki log explorer and give this LogQL query in Grafana:
 {app="loki-medium-logs",namespace="default"}
 {namespace="lwns"}
 
 Clean up:
+```shell
 $ helm delete loki 
 $ kubectl delete deploy loki-medium-logs 
-
+```
 
 
 https://grafana.com/grafana/dashboards/15141-kubernetes-service-logs/
