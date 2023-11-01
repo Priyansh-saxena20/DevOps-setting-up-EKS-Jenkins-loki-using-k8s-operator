@@ -58,12 +58,12 @@ kubectl get packagemanifests -l catalog=operatorhubio-catalog
 https://github.com/helm/helm/releases
 ```
 ```shell
-$ kubectl create namespace lwns
+$ kubectl create namespace myns
 $ ./helm.exe  repo add jenkins https://raw.githubusercontent.com/jenkinsci/kubernetes-operator/master/chart
-$ ./helm.exe install my-jenkins-operator jenkins/jenkins-operator -n lwns --set jenkins.enabled=false
+$ ./helm.exe install my-jenkins-operator jenkins/jenkins-operator -n myns --set jenkins.enabled=false
 ```
 ```shell
-$ kubectl --namespace lwns get pods -w
+$ kubectl --namespace myns get pods -w
 ```
 # YAML CODE FOR JENKINS SETUP USING KUBERNETES OPERATOR
 ```YAML
@@ -72,7 +72,7 @@ apiVersion: jenkins.io/v1alpha2
 kind: Jenkins
 metadata:
   name: example
-  namespace: lwns
+  namespace: myns
 spec:
   configurationAsCode:
     configurations: []
@@ -120,23 +120,23 @@ spec:
   seedJobs:
     - id: jenkins-operator
       targets: "cicd/jobs/*.jenkins"
-      description: "LW Jenkins Operator repository"
+      description: "MY Jenkins Operator repository"
       repositoryBranch: master
       repositoryUrl: https://github.com/jenkinsci/kubernetes-operator.git
 ```
 ```shell
 $ kubectl create -f jenkins_instance.yaml
-$ kubectl --namespace lwns get pods -w
+$ kubectl --namespace myns get pods -w
 ```
 ```shell
-$ kubectl --namespace lwns get secret jenkins-operator-credentials-example -o 'jsonpath={.data.user}' | base64 -d
+$ kubectl --namespace myns get secret jenkins-operator-credentials-example -o 'jsonpath={.data.user}' | base64 -d
 
 ```
 ```shell
-$ kubectl --namespace lwns get secret jenkins-operator-credentials-example -o 'jsonpath={.data.password}' | base64 -d
+$ kubectl --namespace myns get secret jenkins-operator-credentials-example -o 'jsonpath={.data.password}' | base64 -d
 ```
 ```shell
-$ kubectl --namespace lwns port-forward jenkins-example 8080:8080
+$ kubectl --namespace myns port-forward jenkins-example 8080:8080
 ```
 ```shell
 $ ./helm.exe  repo add grafana https://grafana.github.io/helm-charts
@@ -157,7 +157,7 @@ $ kubectl get secret loki-grafana -o go-template='{{range $k,$v := .data}}{{prin
 
 Loki log explorer and give this LogQL query in Grafana:
 {app="loki-medium-logs",namespace="default"}
-{namespace="lwns"}
+{namespace="myns"}
 
 Clean up:
 ```shell
